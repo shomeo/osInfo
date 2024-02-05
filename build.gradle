@@ -1,0 +1,38 @@
+// File: build.gradle
+import static org.apache.tools.ant.taskdefs.condition.Os.*
+ 
+task os {
+    description 'Run all conditional os tasks'
+}
+ 
+// Create 3 tasks that simply print
+// the task name that is executed
+// if the build scripts runs on the
+// recognized operating system.
+[FAMILY_WINDOWS, FAMILY_UNIX, FAMILY_MAC].each { osName ->
+ 
+    // Create task.
+    tasks.register("${osName}") {
+        description "Run when OS is ${osName}"
+ 
+        // Add condition to check operating system.
+        onlyIf { isFamily(osName) }
+ 
+        doLast {
+            println "Execute task '${it.name}'"
+        }
+    }
+ 
+    // Add task as dependency for the os task.
+    os.dependsOn osName
+}
+ 
+ 
+tasks.register("osInfo") {
+    description 'Show information about the operating system'
+    doLast {
+        println "Family:       ${OS_NAME}"
+        println "Version:      ${OS_VERSION}"
+        println "Architecture: ${OS_ARCH}"
+    }
+}
